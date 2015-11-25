@@ -42,9 +42,16 @@ public class InstagramAuthContoller {
                 .scope(SCOPE)
                 .build();
 
-        String url = service.getAuthorizationUrl(EMPTY_TOKEN);
+        String authUrl = service.getAuthorizationUrl(EMPTY_TOKEN);
 
-        return "redirect:" + url;
+//        auth =  new InstagramAuthentication();
+//        String authUrl = auth.setRedirectUri(CALLBACK)
+//                .setClientSecret(CLIENT_SECRET)
+//                .setClientId(CLIENT_ID)
+//                .setScope(SCOPE)
+//                .getAuthorizationUri();
+
+        return "redirect:" + authUrl;
     }
 
     @RequestMapping(value = "/callback", method = RequestMethod.GET)
@@ -54,8 +61,13 @@ public class InstagramAuthContoller {
         Verifier verifier = new Verifier(code);
         Token accessToken = service.getAccessToken(EMPTY_TOKEN, verifier);
 
-        instagram = new Instagram(accessToken);
-        servletContext.setAttribute("instagram", instagram);
+//        instagram = new Instagram(accessToken);
+//        servletContext.setAttribute("instagram", instagram);
+        servletContext.setAttribute("accessToken", accessToken.getToken());
+//        AccessToken token = auth.build(code);
+//
+//        InstagramSession session = new InstagramSession(token);
+//        servletContext.setAttribute("instagram", session);
 
         return "redirect:/";
     }
