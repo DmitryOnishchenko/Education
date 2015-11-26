@@ -1,6 +1,5 @@
 package com.donishchenko.instaphoto.controller;
 
-import org.jinstagram.Instagram;
 import org.jinstagram.auth.InstagramAuthService;
 import org.jinstagram.auth.model.Token;
 import org.jinstagram.auth.model.Verifier;
@@ -24,14 +23,8 @@ public class InstagramAuthContoller {
     private static String CALLBACK = "http://localhost:8080/instagram/callback";
     private static String SCOPE = "public_content follower_list comments relationships likes";
 
-    private static String INSTAGRAM_AUTH_API = String.format(
-            "https://api.instagram.com/oauth/authorize/?client_id=%s&redirect_uri=%s&response_type=code", CLIENT_ID, CALLBACK);
-
-    //            "https://api.instagram.com/oauth/authorize/?client_id=CLIENT-ID&redirect_uri=REDIRECT-URI&response_type=code";
-
     private static final Token EMPTY_TOKEN = null;
     private InstagramService service;
-    private Instagram instagram;
 
     @RequestMapping(value = "/auth", method = RequestMethod.GET)
     public String getAuth() {
@@ -44,13 +37,6 @@ public class InstagramAuthContoller {
 
         String authUrl = service.getAuthorizationUrl(EMPTY_TOKEN);
 
-//        auth =  new InstagramAuthentication();
-//        String authUrl = auth.setRedirectUri(CALLBACK)
-//                .setClientSecret(CLIENT_SECRET)
-//                .setClientId(CLIENT_ID)
-//                .setScope(SCOPE)
-//                .getAuthorizationUri();
-
         return "redirect:" + authUrl;
     }
 
@@ -61,13 +47,7 @@ public class InstagramAuthContoller {
         Verifier verifier = new Verifier(code);
         Token accessToken = service.getAccessToken(EMPTY_TOKEN, verifier);
 
-//        instagram = new Instagram(accessToken);
-//        servletContext.setAttribute("instagram", instagram);
         servletContext.setAttribute("accessToken", accessToken.getToken());
-//        AccessToken token = auth.build(code);
-//
-//        InstagramSession session = new InstagramSession(token);
-//        servletContext.setAttribute("instagram", session);
 
         return "redirect:/";
     }
