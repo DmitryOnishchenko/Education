@@ -81,6 +81,21 @@ public class MainWindow extends JFrame {
         });
         buttonPanel.add(clearButton);
 
+        JButton downloadButton = new JButton("Download");
+        downloadButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mainController.download();
+                    }
+                }).start();
+            }
+        });
+        buttonPanel.add(downloadButton);
+
+        /* Add button panel */
         add(buttonPanel, BorderLayout.NORTH);
 
         /* Progress bar */

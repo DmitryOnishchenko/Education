@@ -32,6 +32,14 @@ public class MainController {
         }
     }
 
+    public void download() {
+        try {
+            downloader.download();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void setTotalWork(int totalWork) {
         mainWindow.setTotalWork(totalWork);
     }

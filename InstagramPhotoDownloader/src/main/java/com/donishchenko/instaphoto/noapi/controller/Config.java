@@ -87,9 +87,9 @@ public class Config {
 
             if (dirString == null) {
                 dirString = target.getName();
-                target.setDirectory(dirString);
             }
             dirString = defaultDirectory + "/" + dirString;
+            target.setDirectory(dirString);
 
             File directory = new File(dirString);
             if (!directory.exists()) {

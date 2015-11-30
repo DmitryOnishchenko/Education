@@ -9,7 +9,6 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -19,7 +18,7 @@ import java.util.regex.Pattern;
 
 import static com.donishchenko.instaphoto.noapi.logger.ConsoleLogger.log;
 
-public class SearchTask implements Callable<List<URL>> {
+public class SearchTask implements Callable<List<DownloadTask>> {
     private Downloader downloader;
     private String mainUrl;
     private Target target;
@@ -31,7 +30,7 @@ public class SearchTask implements Callable<List<URL>> {
     }
 
     @Override
-    public List<URL> call() throws Exception {
+    public List<DownloadTask> call() throws Exception {
         String targetUrl = mainUrl + "/" + target.getName();
 
         log("Try to connect to: " + target.getName());
@@ -44,7 +43,7 @@ public class SearchTask implements Callable<List<URL>> {
         }
         downloader.addWork(totalWork);
 
-        List<URL> list = process(targetUrl);
+        List<DownloadTask> list = process(targetUrl);
 
         long elapsed = System.currentTimeMillis() - start;
 
@@ -67,18 +66,18 @@ public class SearchTask implements Callable<List<URL>> {
         return -1;
     }
 
-    private List<URL> process(String url) throws IOException {
+    private List<DownloadTask> process(String url) throws IOException {
         String response = getResponse(url);
         String data = extractData(response);
 
-        List<URL> list = parseData(data);
+        List<DownloadTask> list = parseData(data);
 
         String maxId = checkForNextPage(data);
         if (maxId != null) {
             String param = "/?max_id=";
             String newUrl = mainUrl + "/" + target.getName() + param + maxId;
 
-            List<URL> newList = process(newUrl);
+            List<DownloadTask> newList = process(newUrl);
             list.addAll(newList);
         }
 
@@ -131,10 +130,10 @@ public class SearchTask implements Callable<List<URL>> {
         return data;
     }
 
-    private List<URL> parseData(String data) throws IOException {
+    private List<DownloadTask> parseData(String data) throws IOException {
         /* Parse */
         /* Find all .jpg */
-        List<URL> list = new ArrayList<>();
+        List<DownloadTask> list = new ArrayList<>();
         int counter = 0;
         String displaySrc = "(\"display_src\"):\"(https:[^\"]+)\"";
         Pattern pattern = Pattern.compile(displaySrc);
@@ -144,7 +143,7 @@ public class SearchTask implements Callable<List<URL>> {
             counter += 1;
 
             String match = matcher.group(2).replace("\\", "");
-            list.add(new URL(match));
+            list.add(new DownloadTask(match, target));
 //            log(match);
         }
 
