@@ -1,5 +1,8 @@
 {
   "main_url": "https://www.instagram.com",
-  "targets_file_name": "targets.json",
-  "default_directory": "downloads"
+  "default_directory": "downloads",
+  "threads": 10,
+  "log_level": "ALL",
+
+  "targets_file_name": "targets.json"
 }

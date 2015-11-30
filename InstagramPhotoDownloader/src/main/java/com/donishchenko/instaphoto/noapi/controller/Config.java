@@ -1,70 +1,84 @@
 package com.donishchenko.instaphoto.noapi.controller;
 
+import com.donishchenko.instaphoto.noapi.logger.LogLevel;
 import com.donishchenko.instaphoto.noapi.model.Target;
-import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.NoSuchFileException;
 import java.util.Date;
 import java.util.List;
 
 import static com.donishchenko.instaphoto.noapi.logger.ConsoleLogger.log;
+import static com.donishchenko.instaphoto.noapi.logger.ConsoleLogger.logError;
 
 public class Config {
     private File configFile = new File("config.json");
     private long lastModified;
 
     /* Config */
-    private String urlString;
-    private String targetsFileName;
+    @JsonProperty("main_url")
+    private String mainUrl;
+
+    @JsonProperty("default_directory")
     private String defaultDirectory;
+
+    @JsonProperty("threads")
+    private int nThreads;
+
+    @JsonProperty("log_level")
+    private LogLevel logLevel;
+
+    /* Targets */
+    @JsonProperty("targets_file_name")
+    private String targetsFileName;
+
+    @JsonProperty("targets")
     private List<Target> targets;
 
     public boolean checkConfig() {
+        boolean valid = true;
+
         /* Check config file */
         if (!configFile.exists()) {
-            log("Check config.json! It doesn't exist.");
+            logError("Check config.json! It doesn't exist.");
             return false;
         }
 
-        /* Check modification */
-        long checkModified = new Date(configFile.lastModified()).getTime();
-        if (checkModified > lastModified) {
-            lastModified = checkModified;
-            updateConfig();
-        }
-
-        return true;
-    }
-
-    private void updateConfig() {
         try {
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(configFile, JsonNode.class);
-
-            urlString = node.get("main_url").textValue();
-            targetsFileName = node.get("targets_file_name").textValue();
-            defaultDirectory = node.get("default_directory").textValue();
-
-            updateTargets();
-            checkDirectories();
-
-        } catch (IOException | NoSuchFieldException e) {
-            e.printStackTrace();
+            /* Check for modification. Update config if needed */
+            long checkModified = new Date(configFile.lastModified()).getTime();
+            if (checkModified > lastModified) {
+                lastModified = checkModified;
+                updateConfig();
+            }
+        } catch (IOException e) {
+            valid = false;
+            log(e.getMessage());
         }
+
+        return valid;
     }
 
-    private void updateTargets() throws NoSuchFieldException, IOException {
+    private void updateConfig() throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.readerForUpdating(this).readValue(configFile);
+
+        updateTargets();
+        checkDirectories();
+    }
+
+    private void updateTargets() throws IOException {
         File targetsFile = new File(targetsFileName);
         if (!targetsFile.exists()) {
-            log("No such file: " + targetsFileName);
-            throw new NoSuchFieldException(targetsFileName);
+            logError("No such file: " + targetsFileName);
+            throw new NoSuchFileException(targetsFileName);
         }
 
         ObjectMapper mapper = new ObjectMapper();
-        targets = mapper.readValue(targetsFile,
-                mapper.getTypeFactory().constructCollectionType(List.class, Target.class));
+        mapper.readerForUpdating(this).readValue(targetsFile);
     }
 
     private void checkDirectories() {
@@ -72,16 +86,47 @@ public class Config {
             String dirString = target.getDirectory();
 
             if (dirString == null) {
-                dirString = defaultDirectory;
-            } else {
-                dirString = defaultDirectory + "/" + dirString;
+                dirString = target.getName();
+                target.setDirectory(dirString);
             }
-            target.setDirectory(defaultDirectory);
+            dirString = defaultDirectory + "/" + dirString;
 
             File directory = new File(dirString);
             if (!directory.exists()) {
                 directory.mkdirs();
             }
         }
+    }
+
+    public File getConfigFile() {
+        return configFile;
+    }
+
+    public long getLastModified() {
+        return lastModified;
+    }
+
+    public String getMainUrl() {
+        return mainUrl;
+    }
+
+    public String getDefaultDirectory() {
+        return defaultDirectory;
+    }
+
+    public int getThreads() {
+        return nThreads;
+    }
+
+    public LogLevel getLogLevel() {
+        return logLevel;
+    }
+
+    public String getTargetsFileName() {
+        return targetsFileName;
+    }
+
+    public List<Target> getTargets() {
+        return targets;
     }
 }
