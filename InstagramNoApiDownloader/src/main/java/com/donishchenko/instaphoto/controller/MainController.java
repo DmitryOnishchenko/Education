@@ -12,7 +12,7 @@ public class MainController {
     private MainWindow mainWindow;
     private Config config = new Config();
     private Downloader downloader = new Downloader(this, config);
-    private volatile boolean working;
+    private volatile boolean isWorking;
 
     public MainController(MainWindow mainWindow) {
         this.mainWindow = mainWindow;
@@ -26,35 +26,55 @@ public class MainController {
     }
 
     public void search() {
-        if (!working) {
-            working = true;
+        if (!isWorking) {
+            isWorking = true;
         } else {
             return;
         }
+
         if (!config.checkConfig()) {
             return;
         }
 
-        try {
-            printer.time().print("<b>Search started</b>").br();
-            downloader.search();
-        } catch (InterruptedException | ExecutionException e) {
-            printer.time().printError(e.getMessage()).br();
-            e.printStackTrace();
-        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    downloader.search();
+                } catch (InterruptedException | ExecutionException e) {
+                    isWorking = false;
+                    printer.time().printError(e.getMessage()).br();
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
     public void download() {
-        try {
-            if (!working) {
-                working = true;
-                printer.time().print("<b>Download started</b>").br();
-
-                downloader.download();
-            }
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
+        if (!isWorking) {
+            isWorking = true;
+        } else {
+            return;
         }
+
+        if (!downloader.haveWork()) {
+            printer.time().print("No work. First try to click <b>\"Search\"</b> button").br();
+            isWorking = false;
+            return;
+        }
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    downloader.download();
+                } catch (InterruptedException | ExecutionException e) {
+                    isWorking = false;
+                    printer.time().printError(e.getMessage()).br();
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
     public void setTotalWork(int totalWork) {
@@ -70,17 +90,7 @@ public class MainController {
         int progress = mainWindow.getProgress();
         if (progress == mainWindow.getTotalWork()) {
             printer.time().print("<b>Task ended<b>").br();
-            working = false;
-//            List<Target> targets = config.getTargets();
-//            for (Target target : targets) {
-//                printer.time().print(
-//                        "<span style=\"color: #493319\"><b>" + target.getName() + "</b></span> : found " +
-//                                target.getDownloadTasks().size() + " images.");
-//            }
+            isWorking = false;
         }
     }
-//
-//    public void resetProgress() {
-//        mainWindow.resetProgress();
-//    }
 }

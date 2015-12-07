@@ -50,6 +50,8 @@ public class Downloader {
         mainController.setTotalWork(totalWork);
 
         /* Search */
+        printer.time().print("<b>Search started</b>").br();
+
         for (Target target : targets) {
             String targetUrl = config.getMainUrl() + "/" + target.getName();
             searchService.submit(new SearchCallable(this, target, targetUrl));
@@ -67,6 +69,8 @@ public class Downloader {
         mainController.setTotalWork(totalWork);
 
         /* Submit download tasks */
+        printer.time().print("<b>Download started</b>").br();
+
         ExecutorCompletionService<String> service = new ExecutorCompletionService<>(executor);
         for (Target target : config.getTargets()) {
             for (DownloadTask task : target.getDownloadTasks()) {
@@ -81,6 +85,16 @@ public class Downloader {
             }
             mainController.addProgress(1);
         }
+    }
+
+    public boolean haveWork() {
+        for (Target target : config.getTargets()) {
+            if (target.getDownloadTasks().isEmpty()) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private void prepareDirectories() {

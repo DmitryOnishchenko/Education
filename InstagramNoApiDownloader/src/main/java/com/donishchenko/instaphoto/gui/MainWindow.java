@@ -22,68 +22,52 @@ public class MainWindow extends JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        /* Log panel */
-        JPanel logPanel = new JPanel(new BorderLayout());
+        /* Console panel */
+        JPanel consolePanel = new JPanel(new BorderLayout());
 
-        final JTextPane textPane = new JTextPane() {
-            //TODO test RenderingHints
-            @Override
-            protected void paintComponent(Graphics g) {
-                Graphics2D graphics2d = (Graphics2D) g;
-                graphics2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                        RenderingHints.VALUE_ANTIALIAS_ON);
-
-                super.paintComponent(g);
-            }
-        };
+        final JTextPane textPane = new JTextPane();
 
         textPane.setEditable(false);
         textPane.setBackground(Color.decode(StyleProps.CONSOLE_BACKGROUND_COLOR));
         textPane.setContentType("text/html");
 
+        /* Init ConsolePrinter doc */
         ConsolePrinter.setDoc(textPane.getStyledDocument());
 
         JScrollPane scrollPane = new JScrollPane(textPane);
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPane.setPreferredSize(new Dimension(getWidth(), getHeight()));
 
-        logPanel.add(scrollPane, BorderLayout.CENTER);
-        add(logPanel, BorderLayout.CENTER);
+        consolePanel.add(scrollPane, BorderLayout.CENTER);
+        add(consolePanel, BorderLayout.CENTER);
 
         /* Button panel */
         JPanel buttonPanel = new JPanel();
         buttonPanel.setBackground(Color.decode(StyleProps.MAIN_BACKGROUND_COLOR));
 
+        /* Init button */
         JButton initButton = new JButton("Init");
         initButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        resetProgress();
-                        mainController.init();
-                    }
-                }).start();
+                resetProgress();
+                mainController.init();
             }
         });
         buttonPanel.add(initButton);
 
+        /* Search button */
         JButton searchButton = new JButton("Search");
         searchButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        resetProgress();
-                        mainController.search();
-                    }
-                }).start();
+                resetProgress();
+                mainController.search();
             }
         });
         buttonPanel.add(searchButton);
 
+        /* Clear button */
         JButton clearButton = new JButton("Clear");
         clearButton.addActionListener(new ActionListener() {
             @Override
@@ -94,17 +78,13 @@ public class MainWindow extends JFrame {
         });
         buttonPanel.add(clearButton);
 
+        /* Download button */
         JButton downloadButton = new JButton("Download");
         downloadButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        resetProgress();
-                        mainController.download();
-                    }
-                }).start();
+                resetProgress();
+                mainController.download();
             }
         });
         buttonPanel.add(downloadButton);

@@ -6,6 +6,7 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.StyledDocument;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.StyleSheet;
+import java.awt.*;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -40,16 +41,16 @@ public class ConsolePrinter {
     }
 
     private synchronized void _print(final String message) {
-//        EventQueue.invokeLater(new Runnable() {
-//            @Override
-//            public void run() {
+        EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
                 try {
                     doc.insertAfterEnd(doc.getCharacterElement(doc.getLength()), message);
                 } catch (BadLocationException | IOException e) {
                     e.printStackTrace();
                 }
-//            }
-//        });
+            }
+        });
     }
 
     public synchronized ConsolePrinter time() {
@@ -63,7 +64,6 @@ public class ConsolePrinter {
 
     public synchronized ConsolePrinter print(final String message) {
         StringBuilder builder = new StringBuilder();
-//        builder.append("<b class=date>[ ").append(DATE_FORMAT.format(new Date())).append(" ]</b> ");
         builder.append("<span class=message>").append(message).append("</span>");
 
         _print(builder.toString());
@@ -79,7 +79,6 @@ public class ConsolePrinter {
 
     public synchronized ConsolePrinter printError(final String message) {
         StringBuilder builder = new StringBuilder();
-//        builder.append("<b class=date>[ ").append(DATE_FORMAT.format(new Date())).append(" ]</b> ");
         builder.append("<span class=error><b>").append(message).append("</b></span>");
 
         _print(builder.toString());
