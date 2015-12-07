@@ -2,8 +2,9 @@ package com.donishchenko.instaphoto.controller;
 
 import com.donishchenko.instaphoto.gui.MainWindow;
 import com.donishchenko.instaphoto.logger.ConsolePrinter;
-import com.donishchenko.instaphoto.worker.Downloader;
+import com.donishchenko.instaphoto.worker.Worker;
 
+import java.nio.file.NoSuchFileException;
 import java.util.concurrent.ExecutionException;
 
 public class MainController {
@@ -11,7 +12,7 @@ public class MainController {
 
     private MainWindow mainWindow;
     private Config config = new Config();
-    private Downloader downloader = new Downloader(this, config);
+    private Worker worker = new Worker(this, config);
     private volatile boolean isWorking;
 
     public MainController(MainWindow mainWindow) {
@@ -20,7 +21,7 @@ public class MainController {
 
     public void init() {
         config.init();
-        downloader.init();
+        worker.init();
 
         printer.time().print("Targets: <b>[ " + config.getTargetsNames() + " ]</b>").br();
     }
@@ -40,7 +41,7 @@ public class MainController {
             @Override
             public void run() {
                 try {
-                    downloader.search();
+                    worker.search();
                 } catch (InterruptedException | ExecutionException e) {
                     isWorking = false;
                     printer.time().printError(e.getMessage()).br();
@@ -57,7 +58,7 @@ public class MainController {
             return;
         }
 
-        if (!downloader.haveWork()) {
+        if (!worker.haveWork()) {
             printer.time().print("No work. First try to click <b>\"Search\"</b> button").br();
             isWorking = false;
             return;
@@ -67,8 +68,8 @@ public class MainController {
             @Override
             public void run() {
                 try {
-                    downloader.download();
-                } catch (InterruptedException | ExecutionException e) {
+                    worker.download();
+                } catch (InterruptedException | ExecutionException | NoSuchFileException e) {
                     isWorking = false;
                     printer.time().printError(e.getMessage()).br();
                     e.printStackTrace();

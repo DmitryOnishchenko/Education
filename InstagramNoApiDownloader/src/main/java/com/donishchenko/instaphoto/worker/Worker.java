@@ -6,24 +6,28 @@ import com.donishchenko.instaphoto.logger.ConsolePrinter;
 import com.donishchenko.instaphoto.model.Target;
 
 import java.io.File;
+import java.nio.file.NoSuchFileException;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class Downloader {
+public class Worker {
     private static final ConsolePrinter printer = ConsolePrinter.getInstance();
 
     private MainController mainController;
     private Config config;
+    private FilesChecker filesChecker;
+
     private ExecutorService executor;
     private ExecutorCompletionService<Integer> lookUpService;
     private ExecutorCompletionService<List<DownloadTask>> searchService;
 
-    public Downloader(MainController mainController, Config config) {
+    public Worker(MainController mainController, Config config) {
         this.mainController = mainController;
         this.config = config;
+        this.filesChecker = new FilesChecker(config);
     }
 
     public void init() {
@@ -58,8 +62,10 @@ public class Downloader {
         }
     }
 
-    public void download() throws InterruptedException, ExecutionException {
+    public void download() throws InterruptedException, ExecutionException, NoSuchFileException {
         prepareDirectories();
+
+        filesChecker.checkFiles();
 
         /* Set progress bar */
         int totalWork = 0;

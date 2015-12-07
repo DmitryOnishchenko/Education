@@ -14,12 +14,12 @@ import java.util.regex.Pattern;
 public class SearchCallable implements Callable<List<DownloadTask>> {
     private static final ConsolePrinter printer = ConsolePrinter.getInstance();
 
-    private Downloader downloader;
+    private Worker worker;
     private Target target;
     private String targetUrl;
 
-    public SearchCallable(Downloader downloader, Target target, String targetUrl) {
-        this.downloader = downloader;
+    public SearchCallable(Worker worker, Target target, String targetUrl) {
+        this.worker = worker;
         this.target = target;
         this.targetUrl = targetUrl;
     }
@@ -60,12 +60,12 @@ public class SearchCallable implements Callable<List<DownloadTask>> {
             }
             builder.append(maxId);
 
-            downloader.submitNewSearchTask(target, builder.toString());
+            worker.submitNewSearchTask(target, builder.toString());
         }
 
         List<DownloadTask> tasks = parseData(data);
         target.addTasks(tasks);
-        downloader.addProgress(tasks.size());
+        worker.addProgress(tasks.size());
 
         return tasks;
 //        return parseData(data);
