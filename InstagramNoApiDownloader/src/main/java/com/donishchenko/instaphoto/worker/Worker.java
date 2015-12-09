@@ -8,6 +8,7 @@ import com.donishchenko.instaphoto.model.Target;
 import java.io.File;
 import java.nio.file.NoSuchFileException;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
@@ -22,7 +23,7 @@ public class Worker {
 
     private ExecutorService executor;
     private ExecutorCompletionService<Integer> lookUpService;
-    private ExecutorCompletionService<List<DownloadTask>> searchService;
+    private ExecutorCompletionService<Map<String, DownloadTask>> searchService;
 
     public Worker(MainController mainController, Config config) {
         this.mainController = mainController;
@@ -39,11 +40,16 @@ public class Worker {
     }
 
     public void search() throws InterruptedException, ExecutionException {
+        printer.time().print("<b>Search started</b>").br();
+
         List<Target> targets = config.getTargets();
 
         /* Get total work */
         int totalWork = 0;
         for (Target target : targets) {
+            printer.time()
+                    .print("Try to connect to: <span style=\"color: #493319\"><b>" + target.getName() + "</b></span>").br();
+
             lookUpService.submit(new LookUpCallable(config.getMainUrl(), target));
         }
 
@@ -54,18 +60,18 @@ public class Worker {
         mainController.setTotalWork(totalWork);
 
         /* Search */
-        printer.time().print("<b>Search started</b>").br();
-
         for (Target target : targets) {
             String targetUrl = config.getMainUrl() + "/" + target.getName();
             searchService.submit(new SearchCallable(this, target, targetUrl));
         }
     }
 
-    public void download() throws InterruptedException, ExecutionException, NoSuchFileException {
-        prepareDirectories();
-
+    public void checkFiles() throws NoSuchFileException {
         filesChecker.checkFiles();
+    }
+
+    public void download() throws InterruptedException, ExecutionException, NoSuchFileException {
+        printer.time().print("<b>Download started</b>").br();
 
         /* Set progress bar */
         int totalWork = 0;
@@ -75,11 +81,9 @@ public class Worker {
         mainController.setTotalWork(totalWork);
 
         /* Submit download tasks */
-        printer.time().print("<b>Download started</b>").br();
-
         ExecutorCompletionService<String> service = new ExecutorCompletionService<>(executor);
         for (Target target : config.getTargets()) {
-            for (DownloadTask task : target.getDownloadTasks()) {
+            for (DownloadTask task : target.getDownloadTasks().values()) {
                 service.submit(new DownloadCallable(task));
             }
         }
@@ -95,23 +99,23 @@ public class Worker {
 
     public boolean haveWork() {
         for (Target target : config.getTargets()) {
-            if (target.getDownloadTasks().isEmpty()) {
-                return false;
+            if (!target.getDownloadTasks().isEmpty()) {
+                return true;
             }
         }
 
-        return true;
+        return false;
     }
 
-    private void prepareDirectories() {
+    public void prepareDirectories() {
         for (Target target : config.getTargets()) {
             String dirString = target.getDirectory();
 
             if (dirString == null) {
                 dirString = target.getName();
+                target.setDirectory(dirString);
             }
             dirString = config.getDefaultDirectory() + "/" + dirString;
-            target.setDirectory(dirString);
 
             File directory = new File(dirString);
             if (!directory.exists()) {

@@ -6,7 +6,8 @@ import com.donishchenko.instaphoto.model.Target;
 
 import java.io.File;
 import java.nio.file.NoSuchFileException;
-import java.util.List;
+import java.util.Arrays;
+import java.util.Set;
 
 public class FilesChecker {
     private static final ConsolePrinter printer = ConsolePrinter.getInstance();
@@ -26,16 +27,14 @@ public class FilesChecker {
         }
 
         for (Target target : config.getTargets()) {
-            File targetDirectory = new File(target.getDirectory());
-            File[] files = targetDirectory.listFiles();
+            String targetPath = config.getDefaultDirectory() + "/" + target.getDirectory();
+            File targetDirectory = new File(targetPath);
+            String[] files = targetDirectory.list();
 
-
-
-            List<DownloadTask> tasks = target.getDownloadTasks();
-
-//            for (DownloadTask task : tasks) {
-//
-//            }
+            Set<String> keys = target.getDownloadTasks().keySet();
+            if (keys.removeAll(Arrays.asList(files)) && keys.size() != 0) {
+                printer.time().print("There are <b>" + keys.size() + "</b> missing files.").br();
+            }
         }
     }
 }

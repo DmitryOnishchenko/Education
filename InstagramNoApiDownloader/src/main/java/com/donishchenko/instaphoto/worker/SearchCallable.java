@@ -5,13 +5,13 @@ import com.donishchenko.instaphoto.logger.ConsolePrinter;
 import com.donishchenko.instaphoto.model.Target;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class SearchCallable implements Callable<List<DownloadTask>> {
+public class SearchCallable implements Callable<Map<String, DownloadTask>> {
     private static final ConsolePrinter printer = ConsolePrinter.getInstance();
 
     private Worker worker;
@@ -25,15 +25,10 @@ public class SearchCallable implements Callable<List<DownloadTask>> {
     }
 
     @Override
-    public List<DownloadTask> call() throws Exception {
-//        String targetUrl = mainUrl + "/" + target.getName();
-
-        printer.time()
-                .print("Try to connect to: <span style=\"color: #493319\"><b>" + target.getName() + "</b></span>").br();
-
+    public Map<String, DownloadTask> call() throws Exception {
         long start = System.currentTimeMillis();
 
-        List<DownloadTask> list = process(targetUrl);
+        Map<String, DownloadTask> list = process(targetUrl);
 
         long elapsed = System.currentTimeMillis() - start;
 
@@ -44,7 +39,7 @@ public class SearchCallable implements Callable<List<DownloadTask>> {
         return list;
     }
 
-    private List<DownloadTask> process(String url) throws IOException {
+    private Map<String, DownloadTask> process(String url) throws IOException {
         String data = InstaParser.getData(url);
 
         String maxId = checkForNextPage(data);
@@ -63,7 +58,7 @@ public class SearchCallable implements Callable<List<DownloadTask>> {
             worker.submitNewSearchTask(target, builder.toString());
         }
 
-        List<DownloadTask> tasks = parseData(data);
+        Map<String, DownloadTask> tasks = parseData(data);
         target.addTasks(tasks);
         worker.addProgress(tasks.size());
 
@@ -71,17 +66,18 @@ public class SearchCallable implements Callable<List<DownloadTask>> {
 //        return parseData(data);
     }
 
-    private List<DownloadTask> parseData(String data) throws IOException {
+    private Map<String, DownloadTask> parseData(String data) throws IOException {
         /* Parse */
         /* Find all .jpg */
-        List<DownloadTask> list = new ArrayList<>();
-        String displaySrc = "(\"display_src\"):\"(https:[^\"]+)\"";
+        Map<String, DownloadTask> list = new HashMap<>();
+        String displaySrc = "(\"display_src\"):\"(https:[^\"]+/([^\"]+\\.jpg))\"";
         Pattern pattern = Pattern.compile(displaySrc);
         Matcher matcher = pattern.matcher(data);
 
         while (matcher.find()) {
             String match = matcher.group(2).replace("\\", "");
-            list.add(new DownloadTask(match, target));
+            String key = matcher.group(3);
+            list.put(key, new DownloadTask(match, target));
         }
 
         return list;

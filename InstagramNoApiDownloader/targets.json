@@ -1,8 +1,11 @@
 {
   "targets": [
     {
-      "name": "sacr8tum",
-      "directory": "changeDirTest"
+      "name": "sacr8tum"
+    },
+    {
+      "name": "ideas_tatoo",
+      "directory": "ideas_tatoo"
     }
   ]
 }

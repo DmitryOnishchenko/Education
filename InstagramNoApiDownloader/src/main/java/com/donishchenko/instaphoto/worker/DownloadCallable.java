@@ -30,7 +30,8 @@ public class DownloadCallable implements Callable<String> {
 
             if (image != null) {
                 Target target = task.getTarget();
-                File destFile = new File(target.getDirectory() + "/" + fileName);
+                String destPath = target.getDefaultDirectory() + "/" + target.getDirectory() + "/" + fileName;
+                File destFile = new File(destPath);
                 ImageIO.write(image, formatName, destFile);
 
                 return fileName;

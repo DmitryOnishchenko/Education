@@ -112,6 +112,10 @@ public class Config {
 
         ObjectMapper mapper = new ObjectMapper();
         mapper.readerForUpdating(this).readValue(targetsFile);
+
+        for (Target target : targets) {
+            target.setDefaultDirectory(defaultDirectory);
+        }
     }
 
     public File getConfigFile() {

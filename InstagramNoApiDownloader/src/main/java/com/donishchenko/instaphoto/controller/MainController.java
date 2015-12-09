@@ -43,9 +43,10 @@ public class MainController {
                 try {
                     worker.search();
                 } catch (InterruptedException | ExecutionException e) {
-                    isWorking = false;
                     printer.time().printError(e.getMessage()).br();
                     e.printStackTrace();
+                } finally {
+                    isWorking = false;
                 }
             }
         }).start();
@@ -58,21 +59,24 @@ public class MainController {
             return;
         }
 
-        if (!worker.haveWork()) {
-            printer.time().print("No work. First try to click <b>\"Search\"</b> button").br();
-            isWorking = false;
-            return;
-        }
-
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    worker.download();
+                    worker.prepareDirectories();
+                    worker.checkFiles();
+
+                    if (!worker.haveWork()) {
+                        printer.time().print(
+                                "No work. <span style=\"color: #2e6409\"><b>All is up-to-date</b></span>. Click <b>\"Search\"</b> button for new task").br();
+                    } else {
+                        worker.download();
+                    }
                 } catch (InterruptedException | ExecutionException | NoSuchFileException e) {
-                    isWorking = false;
                     printer.time().printError(e.getMessage()).br();
                     e.printStackTrace();
+                } finally {
+                    isWorking = false;
                 }
             }
         }).start();
@@ -90,7 +94,7 @@ public class MainController {
         mainWindow.addProgress(value);
         int progress = mainWindow.getProgress();
         if (progress == mainWindow.getTotalWork()) {
-            printer.time().print("<b>Task ended<b>").br();
+            printer.time().print("<b style=\"color: #2e6409\">Task ended<b>").br();
             isWorking = false;
         }
     }
