@@ -30,11 +30,11 @@ public class DownloadCallable implements Callable<String> {
 
             if (image != null) {
                 Target target = task.getTarget();
-                String destPath = target.getDefaultDirectory() + "/" + target.getDirectory() + "/" + fileName;
-                File destFile = new File(destPath);
+                String folderPath = target.getDefaultDirectory() + "/" + target.getDirectory();
+                File destFile = new File(folderPath + "/" + fileName);
                 ImageIO.write(image, formatName, destFile);
 
-                return fileName;
+                return "<span style=\"color: #493319\"><b>" + folderPath + "</b></span>/" + fileName;
             }
         } catch (IOException e) {
             printer.time().printError(task.getUrl() + " : " + e.getMessage()).br();

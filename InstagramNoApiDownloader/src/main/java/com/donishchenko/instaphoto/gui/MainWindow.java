@@ -19,6 +19,7 @@ public class MainWindow extends JFrame {
     public MainWindow() {
         setTitle(TITLE);
         setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+        setMinimumSize(new Dimension(500, 200));
         setLocationRelativeTo(null);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
@@ -44,9 +45,12 @@ public class MainWindow extends JFrame {
         /* Button panel */
         JPanel buttonPanel = new JPanel();
         buttonPanel.setBackground(Color.decode(StyleProps.MAIN_BACKGROUND_COLOR));
+        /* Buttons preferred size */
+        Dimension buttonsDimension = new Dimension(100, 30);
 
         /* Init button */
         JButton initButton = new JButton("Init");
+        initButton.setPreferredSize(buttonsDimension);
         initButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -56,19 +60,9 @@ public class MainWindow extends JFrame {
         });
         buttonPanel.add(initButton);
 
-        /* Search button */
-        JButton searchButton = new JButton("Search");
-        searchButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                resetProgress();
-                mainController.search();
-            }
-        });
-        buttonPanel.add(searchButton);
-
         /* Clear button */
         JButton clearButton = new JButton("Clear");
+        clearButton.setPreferredSize(buttonsDimension);
         clearButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -78,8 +72,21 @@ public class MainWindow extends JFrame {
         });
         buttonPanel.add(clearButton);
 
+        /* Search button */
+        JButton searchButton = new JButton("Search");
+        searchButton.setPreferredSize(buttonsDimension);
+        searchButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                resetProgress();
+                mainController.search();
+            }
+        });
+        buttonPanel.add(searchButton);
+
         /* Download button */
         JButton downloadButton = new JButton("Download");
+        downloadButton.setPreferredSize(buttonsDimension);
         downloadButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
