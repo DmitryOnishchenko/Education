@@ -34,6 +34,7 @@ public class MainController {
         }
 
         if (!config.checkConfig()) {
+            isWorking = false;
             return;
         }
 
@@ -56,6 +57,12 @@ public class MainController {
         if (!isWorking) {
             isWorking = true;
         } else {
+            return;
+        }
+
+        if (!config.getConfigFile().exists()) {
+            printer.time().printError("Check \"config.json\"! It doesn't exist.").br();
+            isWorking = false;
             return;
         }
 

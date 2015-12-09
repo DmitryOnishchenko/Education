@@ -32,7 +32,7 @@ public class Worker {
     }
 
     public void init() {
-        if (executor == null) {
+        if (config.getConfigFile().exists() && executor == null) {
             executor = Executors.newFixedThreadPool(config.getThreads());
             lookUpService = new ExecutorCompletionService<>(executor);
             searchService = new ExecutorCompletionService<>(executor);
@@ -98,6 +98,8 @@ public class Worker {
     }
 
     public boolean haveWork() {
+        if (config.getTargets() == null) return false;
+
         for (Target target : config.getTargets()) {
             if (!target.getDownloadTasks().isEmpty()) {
                 return true;

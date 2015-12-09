@@ -76,7 +76,17 @@ public class Config {
     private void updateConfigFile() throws IOException {
         /* Check config file */
         if (!configFile.exists()) {
-            printer.printError("Check \"config.json\"! It doesn't exist.");
+            printer.time().printError("Check \"config.json\"! It doesn't exist.").br();
+            //TODO example message
+            printer.print("<b>Example:</b>").br();
+            printer.print("{").br()
+                    .print("&nbsp&nbsp&nbsp&nbsp\"main_url\": \"https://www.instagram.com\",").br()
+                    .print("&nbsp&nbsp&nbsp&nbsp\"default_directory\": \"downloads\",").br()
+                    .print("&nbsp&nbsp&nbsp&nbsp\"threads\": 4,").br()
+                    .print("&nbsp&nbsp&nbsp&nbsp\"log_level\": \"ALL\",").br()
+                    .print("&nbsp&nbsp&nbsp&nbsp\"targets_file_name\": \"targets.json\"").br()
+                    .print("}").br();
+
             throw new IOException();
         }
 
@@ -99,7 +109,17 @@ public class Config {
 
         /* Check targets file */
         if (!targetsFile.exists()) {
-            printer.printError("No such file: " + targetsFileName);
+            printer.time().printError("No such file: \"" + targetsFileName + "\"").br();
+            //TODO example message
+//            printer.print("<b>Example:</b>").br();
+//            printer.print("{").br()
+//                    .print("&nbsp&nbsp&nbsp&nbsp\"targets\": [").br()
+//                    .print("&nbsp&nbsp&nbsp&nbsp\"default_directory\": \"downloads\",").br()
+//                    .print("&nbsp&nbsp&nbsp&nbsp\"threads\": 4,").br()
+//                    .print("&nbsp&nbsp&nbsp&nbsp\"log_level\": \"ALL\",").br()
+//                    .print("&nbsp&nbsp&nbsp&nbsp\"targets_file_name\": \"targets.json\"").br()
+//                    .print("}").br();
+
             throw new IOException(targetsFileName);
         }
 
