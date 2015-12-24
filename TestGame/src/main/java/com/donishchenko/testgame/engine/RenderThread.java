@@ -1,6 +1,6 @@
 package com.donishchenko.testgame.engine;
 
-import com.donishchenko.testgame.stats.RenderStats;
+import com.donishchenko.testgame.engine.stats.RenderStats;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

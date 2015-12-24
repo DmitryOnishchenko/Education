@@ -1,4 +1,4 @@
-package com.donishchenko.testgame.stats;
+package com.donishchenko.testgame.engine.stats;
 
 import org.springframework.stereotype.Component;
 
