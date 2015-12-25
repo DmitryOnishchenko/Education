@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.image.VolatileImage;
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ public class EngineV3 implements GameEngine {
 
     @Autowired @Qualifier("gameWindow")
     private GameWindow window;
+
     @Autowired
     private RenderThread renderThread;
     @Autowired
@@ -30,19 +32,17 @@ public class EngineV3 implements GameEngine {
     // TODO test graphics
     private VolatileImage frame;
     private BufferedImage test_1;
-//    private BufferedImage floor_1;
-
     private VolatileImage test_2;
+
+    private BufferStrategy strategy;
 
     private ArrayList<BufferedImage> list;
     private ArrayList<VolatileImage> newList;
 
     @Override
     public void init() {
-        test_1 = ImageUtils.toCompatibleImage(ImageUtils.loadImage(Application.class, "/background/map_ideal_0.png"));
+        test_1 = ImageUtils.loadImage(Application.class, "/background/map_ideal_0.png");
         test_2 = ImageUtils.convertToVolatileImage(test_1);
-
-//        floor_1 = ImageUtils.toCompatibleImage(ImageUtils.loadImage(Application.class, "/background/map_ideal_1.png"));
 
         list = (ArrayList<BufferedImage>) Assets.getProperties("effectsAssets").get("bloodSprites");
 
@@ -52,6 +52,10 @@ public class EngineV3 implements GameEngine {
         }
 
         frame = ImageUtils.createVolatileImage(window.getWidth(), window.getHeight(), Transparency.TRANSLUCENT);
+
+        // TODO test BufferStrategy
+        window.createBufferStrategy(2);
+        strategy = window.getBufferStrategy();
 
         gsm.init();
     }
@@ -76,6 +80,35 @@ public class EngineV3 implements GameEngine {
 
     @Override
     public void render() {
+        // Render single frame
+        do {
+            // The following loop ensures that the contents of the drawing buffer
+            // are consistent in case the underlying surface was recreated
+            do {
+                // Get a new graphics context every time through the loop
+                // to make sure the strategy is validated
+                Graphics2D g2 = (Graphics2D) strategy.getDrawGraphics();
+
+                g2.clearRect(0, 0, window.getWidth(), window.getHeight());
+                // Render to graphics
+                gsm.render(g2);
+                // ...
+
+                // Dispose the graphics
+                g2.dispose();
+
+                // Repeat the rendering if the drawing buffer contents
+                // were restored
+            } while (strategy.contentsRestored());
+
+            // Display the buffer
+            strategy.show();
+
+            // Repeat the rendering if the drawing buffer was lost
+        } while (strategy.contentsLost());
+    }
+
+    public void render2() {
         Graphics2D g2 = (Graphics2D) frame.getGraphics();
 
         /* Clear */
@@ -99,8 +132,8 @@ public class EngineV3 implements GameEngine {
 
         g2.dispose();
 
-        window.getContentPane().getGraphics().drawImage(frame, 0, 0, null);
-        window.getContentPane().getGraphics().dispose();
+//        window.getContentPane().getGraphics().drawImage(frame, 0, 0, null);
+//        window.getContentPane().getGraphics().dispose();
     }
 
     @Override

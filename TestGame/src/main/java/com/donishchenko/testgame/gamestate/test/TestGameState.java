@@ -2,19 +2,24 @@ package com.donishchenko.testgame.gamestate.test;
 
 
 import com.donishchenko.testgame.Application;
+import com.donishchenko.testgame.config.GameConstants;
 import com.donishchenko.testgame.gamestate.GameState;
 import com.donishchenko.testgame.gamestate.GameStateManager;
-import com.donishchenko.testgame.utils.ImageUtils;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.awt.image.BufferedImage;
 import java.awt.image.VolatileImage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import static com.donishchenko.testgame.utils.ImageUtils.convertToVolatileImage;
+import static com.donishchenko.testgame.utils.ImageUtils.loadImage;
+
 public class TestGameState extends GameState {
+
+    private VolatileImage backgroundFloor_0;
+    private VolatileImage backgroundFloor_1;
 
     private List<TestObject> testObjects;
 
@@ -25,13 +30,12 @@ public class TestGameState extends GameState {
 
     @Override
     public void init() {
-        BufferedImage sprite = ImageUtils.loadImage(Application.class, "/units/humans/soldier/knight_move.png");
-        sprite = ImageUtils.toCompatibleImage(sprite);
-        VolatileImage volatileImage = ImageUtils.convertToVolatileImage(sprite);
+        backgroundFloor_0 = convertToVolatileImage(loadImage(Application.class, "/background/map_ideal_0.png"));
+        backgroundFloor_1 = convertToVolatileImage(loadImage(Application.class, "/background/map_ideal_1.png"));
 
         Random r = new Random();
-        for (int i = 0; i < 3_000; i++) {
-            testObjects.add(new TestObject(volatileImage, r.nextInt(1000), r.nextInt(720)));
+        for (int i = 0; i < 5_000; i++) {
+            testObjects.add(new TestObject(null, r.nextInt(GameConstants.DEFAULT_WIDTH), r.nextInt(GameConstants.DEFAULT_HEIGHT)));
         }
     }
 
@@ -52,8 +56,12 @@ public class TestGameState extends GameState {
 
     @Override
     public void render(Graphics2D g2) {
+//        g2.drawImage(backgroundFloor_0, 0, 0, null);
+
         for (TestObject obj : testObjects) {
             obj.render(g2);
         }
+
+//        g2.drawImage(backgroundFloor_1, 0, 0, null);
     }
 }

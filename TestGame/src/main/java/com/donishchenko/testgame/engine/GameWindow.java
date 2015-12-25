@@ -12,10 +12,9 @@ public class GameWindow extends JFrame {
 
     public GameWindow() {
         setTitle(TITLE);
+        setPreferredSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));
         setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-        setContentPane(new JPanel());
-        getContentPane().setPreferredSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));
-        getContentPane().setBackground(Color.BLACK);
+        setBackground(Color.BLACK);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         pack();

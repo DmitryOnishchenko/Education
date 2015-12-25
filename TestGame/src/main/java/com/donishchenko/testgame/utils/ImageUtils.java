@@ -17,7 +17,7 @@ public class ImageUtils {
         URL url = clazz.getResource(path);
 
         try {
-            img = ImageIO.read(url);
+            img = toCompatibleImage(ImageIO.read(url));
         } catch (IOException ex) { ex.printStackTrace(); }
 
         return img;

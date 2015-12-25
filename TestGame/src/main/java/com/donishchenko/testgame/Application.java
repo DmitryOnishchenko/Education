@@ -17,6 +17,12 @@ public class Application {
     private GameEngine gameEngine;
 
     public static void main(String[] args) {
+        // switch on translucency acceleration in Windows
+//        System.setProperty("sun.java2d.translaccel", "true");
+//        System.setProperty("sun.java2d.ddforcevram", "true");
+        // switch on hardware acceleration if using OpenGL with pbuffers
+        // System.setProperty("sun.java2d.opengl", "true");
+
         ApplicationContext context = new AnnotationConfigApplicationContext("com.donishchenko.testgame");
         Application app = context.getBean(Application.class);
 
