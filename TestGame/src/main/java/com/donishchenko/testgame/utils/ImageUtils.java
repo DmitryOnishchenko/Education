@@ -110,7 +110,7 @@ public class ImageUtils {
                 image.getWidth(), image.getHeight(), image.getTransparency());
 
         // get the graphics context of the new image to draw the old image on
-        Graphics2D g2d = (Graphics2D) new_image.getGraphics();
+        Graphics2D g2d = new_image.createGraphics();
 
         // actually draw the image and dispose of context no longer needed
         g2d.drawImage(image, 0, 0, null);

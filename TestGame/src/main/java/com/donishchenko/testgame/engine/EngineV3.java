@@ -36,11 +36,25 @@ public class EngineV3 implements GameEngine {
 
     private BufferStrategy strategy;
 
+    // globals used for FSEM tasks
+    private GraphicsDevice gd;
+    private Graphics gScr;
+    private BufferStrategy bufferStrategy;
+
     private ArrayList<BufferedImage> list;
     private ArrayList<VolatileImage> newList;
 
     @Override
     public void init() {
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment( );
+        gd = ge.getDefaultScreenDevice( );
+
+        if (!gd.isFullScreenSupported( )) {
+            System.out.println("Full-screen exclusive mode not supported");
+            System.exit(0);
+        }
+        gd.setFullScreenWindow(window); // switch on FSEM
+
         test_1 = ImageUtils.loadImage(Application.class, "/background/map_ideal_0.png");
         test_2 = ImageUtils.convertToVolatileImage(test_1);
 
@@ -55,6 +69,11 @@ public class EngineV3 implements GameEngine {
 
         // TODO test BufferStrategy
         window.createBufferStrategy(2);
+//        try {
+//            Thread.sleep(500);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
         strategy = window.getBufferStrategy();
 
         gsm.init();

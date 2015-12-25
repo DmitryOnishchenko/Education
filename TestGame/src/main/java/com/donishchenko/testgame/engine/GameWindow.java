@@ -17,6 +17,8 @@ public class GameWindow extends JFrame {
         setBackground(Color.BLACK);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        getContentPane().setIgnoreRepaint(true);
+        setIgnoreRepaint(true);
         pack();
     }
 
