@@ -1,6 +1,6 @@
 package com.donishchenko.testgame.gamestate;
 
-import com.donishchenko.testgame.gamestate.test.TestGameState;
+import com.donishchenko.testgame.gamestate.battle.BattleState;
 import org.springframework.stereotype.Component;
 
 import java.awt.*;
@@ -14,7 +14,8 @@ public class GameStateManager {
 
     public GameStateManager() {
         states = new Stack<>();
-        states.push(new TestGameState(this));
+//        states.push(new TestGameState(this));
+        states.push(new BattleState(this));
     }
 
     public void init() {

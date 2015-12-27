@@ -11,4 +11,7 @@ public class EngineConstants {
     public static final int NANO_PER_FRAME = 1_000_000_000 / MAX_FPS;
     public static final boolean USE_FPS_LIMIT = true;
 
+    public static boolean SHOW_INFO = true;
+    public static boolean DEBUG = false;
+
 }

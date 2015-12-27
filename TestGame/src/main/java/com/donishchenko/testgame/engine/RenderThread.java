@@ -11,6 +11,7 @@ import static com.donishchenko.testgame.utils.CommonUtils.*;
 
 @Component
 public class RenderThread extends Thread {
+
     /* Engine */
     @Autowired private GameEngine engine;
 

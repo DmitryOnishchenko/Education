@@ -11,6 +11,7 @@ import static com.donishchenko.testgame.config.EngineConstants.*;
 
 @Component
 public class UpdateThread extends Thread {
+
     /* Engine */
     @Autowired private GameEngine engine;
 
@@ -27,7 +28,7 @@ public class UpdateThread extends Thread {
         long previous = getNanoTime();
         long lag = 0;
 
-        updateStats.setStartTime(timer / 1_000_000);
+        updateStats.setStartTime(timer);
 
         while (true) {
             long current = getNanoTime();

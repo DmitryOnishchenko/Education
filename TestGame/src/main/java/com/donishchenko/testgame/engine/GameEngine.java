@@ -11,4 +11,5 @@ public interface GameEngine {
 
     /* Events */
     void onError(String errorMessage);
+
 }

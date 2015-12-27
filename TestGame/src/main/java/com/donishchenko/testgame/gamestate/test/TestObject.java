@@ -1,15 +1,18 @@
 package com.donishchenko.testgame.gamestate.test;
 
 import com.donishchenko.testgame.object.GameObject;
+import com.donishchenko.testgame.object.Side;
+import com.donishchenko.testgame.utils.CommonUtils;
+import com.donishchenko.testgame.resources.ImageUtils;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.awt.image.VolatileImage;
+import java.awt.image.BufferedImage;
 import java.util.Random;
 
-public class TestObject extends GameObject<TestObject> {
+public class TestObject extends GameObject {
 
-    private final VolatileImage image;
+    private final BufferedImage image;
 
     private float x;
     private float y;
@@ -19,7 +22,11 @@ public class TestObject extends GameObject<TestObject> {
     private int width;
     private int height;
 
-    public TestObject(VolatileImage volatileImage, float x, float y) {
+    private long start = CommonUtils.getTime();
+
+    public TestObject(BufferedImage volatileImage, float x, float y) {
+        super("TestObject", Side.Neutral, x, y);
+
         this.image = volatileImage;
         this.x = x;
         this.y = y;
@@ -69,8 +76,12 @@ public class TestObject extends GameObject<TestObject> {
 
     @Override
     public void render(Graphics2D g2) {
-        g2.setPaint(color);
-        g2.fillRect((int) x, (int) y, width, height);
+        if (CommonUtils.getTime() - start > 1000 && !ImageUtils.isAccelerated(image)) {
+            start = CommonUtils.getTime();
+            System.out.println("NOT ACCELERATED");
+        }
+
+        g2.drawImage(image, (int) x, (int) y, null);
     }
 
     @Override
@@ -78,8 +89,4 @@ public class TestObject extends GameObject<TestObject> {
 
     }
 
-    @Override
-    public int compareTo(TestObject o) {
-        return 0;
-    }
 }

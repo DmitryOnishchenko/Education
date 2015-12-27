@@ -43,6 +43,6 @@ public class RenderStats {
     }
 
     private void buildReport() {
-        report = "FPS:" + fpsActual + '/' + fpsExpected + " | " + (end - start) / 1_000_000 + " ms";
+        report = "FPS: " + fpsActual + '/' + fpsExpected + " | " + (end - start) / 1_000_000d + " ms";
     }
 }

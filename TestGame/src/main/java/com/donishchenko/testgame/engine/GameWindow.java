@@ -19,6 +19,10 @@ public class GameWindow extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setIgnoreRepaint(true);
         setIgnoreRepaint(true);
+
+        setUndecorated(true);
+        setExtendedState(Frame.MAXIMIZED_BOTH);
+
         pack();
     }
 

@@ -1,31 +1,35 @@
 {
   "name": "Human Archer",
-  "side": "LEFT_ARMY",
+  "type": "Unit",
+  "side": "LeftArmy",
   "race": "Human",
+  "zLevel": 1,
   "maxHp": 50,
   "armor": 0,
   "damage": 40,
   "defaultSpeed": 70,
-  "spawnPrice": 60,
-  "pricePerHead": 20,
-
-  "attackSpeedMs": 4000,
+  "attackSpeed": 4000,
   "attackRange": 800,
   "searchRange": 900,
 
+  "spawnPrice": 60,
+  "pricePerHead": 20,
+
   "hitBoxWidth": 15,
   "hitBoxHeight": 15,
-  "velocityX": 1,
-  "velocityY": 0,
+  "moveDir": {
+    "velocityX": 1,
+    "velocityY": 0
+  },
 
-  "animationSpeedMs": 90,
+  "animationSpeed": 90,
   "widthSprite": 96,
   "heightSprite": 96,
   "baseLine": 30,
-  "moveSpritesFile": "/res/units/humans/archer/archer_move.png",
+  "moveSpritesFile": "/units/humans/archer/archer_move.png",
   "moveSpritesIndex": [0, 8],
-  "fightSpritesFile": "/res/units/humans/archer/archer_fight.png",
+  "fightSpritesFile": "/units/humans/archer/archer_fight.png",
   "fightSpritesIndex": [0, 14],
-  "dieSpritesFile": "/res/units/humans/archer/archer_die.png",
+  "dieSpritesFile": "/units/humans/archer/archer_die.png",
   "dieSpritesIndex": [0, 8]
 }

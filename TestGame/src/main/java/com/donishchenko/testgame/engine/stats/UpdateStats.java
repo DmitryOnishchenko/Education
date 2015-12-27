@@ -17,15 +17,16 @@ public class UpdateStats {
     private long end;
 
     public void start() {
-        start = getTime();
+        start = getNanoTime();
     }
 
     public void end() {
-        end = getTime();
-        if (getTime() - startTime >= 1000) {
+        end = getNanoTime();
+        if (end - startTime >= 1_000_000_000) {
             buildReport();
             tpsActual = 0;
-            startTime += 1000;
+            startTime += 1_000_000_000;
+            System.out.println(report);
         }
     }
 
@@ -42,6 +43,6 @@ public class UpdateStats {
     }
 
     private void buildReport() {
-        report = "TPS:" + tpsActual + '/' + tpsExpected + " | " + (end - start) + " ms";
+        report = "TPS: " + tpsActual + '/' + tpsExpected + " | " + (end - start) / 1_000_000d + " ms";
     }
 }
