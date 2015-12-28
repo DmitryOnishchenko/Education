@@ -44,7 +44,7 @@ public class Grid {
         int x = gameObject.x();
         int y = gameObject.y();
 
-        if (x < INDENT_LEFT || y < INDENT_TOP || x > COLS * CELL_SIZE || y > ROWS * CELL_SIZE) {
+        if (x < INDENT_LEFT || y < INDENT_TOP || x > COLS * CELL_SIZE + INDENT_LEFT - 1 || y >= ROWS * CELL_SIZE + INDENT_TOP) {
             gameObject.delete = true;
             return;
         }

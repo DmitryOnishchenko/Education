@@ -21,7 +21,7 @@ public class TestGameState extends GameState {
     private BufferedImage backgroundLayer_0;
     private BufferedImage backgroundLayer_1;
 
-    private int total = 5_000;
+    private int total = 3_000;
     private List<TestObject> testObjects;
 
     public TestGameState(GameStateManager gsm) {

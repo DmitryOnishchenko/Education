@@ -2,6 +2,8 @@ package com.donishchenko.testgame.object.component;
 
 import com.donishchenko.testgame.object.GameObject;
 import com.donishchenko.testgame.object.Side;
+import com.donishchenko.testgame.resources.GraphicsModel;
+import com.donishchenko.testgame.resources.ResourceLoader;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -13,15 +15,22 @@ public class GraphicsComponentImpl implements GraphicsComponent {
     private GameObject gameObject;
 
     // frame variables
-    private int frameHalfWidth;
-    private int frameHalfHeight;
+    private int xCorrection;
+    private int yCorrection;
 
     // debug
     private Color debugTargetColor;
 
     public GraphicsComponentImpl(GameObject gameObject) {
         this.gameObject = gameObject;
-        this.debugTargetColor = (gameObject.side == Side.LeftArmy ? Color.YELLOW : Color.BLUE);
+    }
+
+    @Override
+    public void init() {
+        debugTargetColor = (gameObject.side == Side.LeftArmy ? Color.YELLOW : Color.BLUE);
+        GraphicsModel graphicsModel = gameObject.graphicsModel;
+        xCorrection = (int) (graphicsModel.getWidthSprite() * ResourceLoader.SCALE / 2);
+        yCorrection = (int) ((graphicsModel.getHeightSprite() + graphicsModel.getBaseLine()) * ResourceLoader.SCALE / 2);
     }
 
     @Override
@@ -53,6 +62,6 @@ public class GraphicsComponentImpl implements GraphicsComponent {
         }
 
         BufferedImage image = gameObject.action.getCurrentFrame();
-        g2.drawImage(image, gameObject.x() - frameHalfWidth, gameObject.y() - frameHalfHeight, null);
+        g2.drawImage(image, gameObject.x() - xCorrection, gameObject.y() - yCorrection, null);
     }
 }

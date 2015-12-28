@@ -12,6 +12,7 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -20,7 +21,7 @@ import static com.donishchenko.testgame.gamestate.battle.BattleStateSettings.*;
 
 public class BattleState extends GameState {
 
-    private Grid grid = new Grid();
+    public static Grid grid = new Grid();
 
     private List<GameObject> renderObjects = new FastRemoveArrayList<>(10_000);
 
@@ -44,8 +45,8 @@ public class BattleState extends GameState {
         Resources effects = ResourceLoader.getResources("effects");
         bloodList = effects.get("bloodList");
 
-        GameObject gameObject = createDemoUnit("Human Soldier", Side.LeftArmy, 150, 300);
-        addGameObject(gameObject);
+        addGameObject(createDemoUnit("Human Soldier", Side.LeftArmy, 150, 500));
+        addGameObject(createDemoUnit("Orc Soldier", Side.RightArmy, 400, 500));
     }
 
     public void addGameObject(GameObject gameObject) {
@@ -53,39 +54,6 @@ public class BattleState extends GameState {
         synchronized (renderObjects) {
             renderObjects.add(gameObject);
         }
-    }
-
-    // TODO test: createDemoUnit
-    public GameObject createDemoUnit(String name, Side side, float x, float y) {
-        GameObject gameObject = new GameObject(name, side,x, y);
-        gameObject.init();
-
-        return gameObject;
-    }
-
-    // TODO test: demoMode
-    /* Benchmark-Demo test */
-    public void demoMode() {
-        addGameObject(createDemoUnit("Human Soldier", Side.LeftArmy, leftSpawnPoint, getRandomPointY()));
-        addGameObject(createDemoUnit("Orc Soldier", Side.RightArmy, rightSpawnPoint, getRandomPointY()));
-
-        if (++testSpawnTimer2 >= 8) {
-            addGameObject(createDemoUnit("Orc Soldier", Side.RightArmy, rightSpawnPoint, getRandomPointY()));
-        }
-
-        if (++testSpawnTimer2 >= 10) {
-            testSpawnTimer2 = 0;
-            addGameObject(createDemoUnit("Human Archer", Side.LeftArmy, leftSpawnPoint, getRandomPointY()));
-            addGameObject(createDemoUnit("Human Archer", Side.LeftArmy, leftSpawnPoint, getRandomPointY()));
-            addGameObject(createDemoUnit("Orc Soldier", Side.RightArmy, rightSpawnPoint, getRandomPointY()));
-            addGameObject(createDemoUnit("Orc Archer", Side.RightArmy, rightSpawnPoint, getRandomPointY()));
-        }
-    }
-
-    // TODO test: random y
-    private Random random = new Random();
-    public int getRandomPointY() {
-        return (int) (random.nextFloat() * 490 + Grid.INDENT_TOP);
     }
 
     @Override
@@ -109,18 +77,30 @@ public class BattleState extends GameState {
 
     // TODO sortTrigger: don't forget this
     private int sortTrigger = MAX_FPS / 2 - 1;
+
     @Override
     public void render(Graphics2D g2) {
         g2.drawImage(backgroundLayer_0, 0, 0, null);
+
+        if (DEBUG_GRID) {
+            grid.debugRender(g2);
+        }
 
         synchronized (renderObjects) {
             if (++sortTrigger == MAX_FPS / 2) {
                 sortTrigger = 0;
 
                 // copy yLevel for sort
-                for (GameObject obj : renderObjects) {
-                    obj.yLevel = obj.pos.y;
+                Iterator<GameObject> iterator = renderObjects.iterator();
+                while (iterator.hasNext()) {
+                    GameObject gameObject = iterator.next();
+                    if (gameObject.delete) {
+                        iterator.remove();
+                    } else {
+                        gameObject.yLevel = gameObject.pos.y;
+                    }
                 }
+
                 Collections.sort(renderObjects);
             }
             for (GameObject obj : renderObjects) {
@@ -134,4 +114,38 @@ public class BattleState extends GameState {
         g2.setPaint(Color.WHITE);
         g2.drawString("BattleState | GameObjects: " + renderObjects.size(), 900, 36);
     }
+
+    // TODO test: createDemoUnit
+    public GameObject createDemoUnit(String name, Side side, float x, float y) {
+        GameObject gameObject = new GameObject(name, side,x, y);
+        gameObject.init();
+
+        return gameObject;
+    }
+
+    // TODO test: demoMode
+    /* Benchmark-Demo test */
+    public void demoMode() {
+        addGameObject(createDemoUnit("Human Soldier", Side.LeftArmy, leftSpawnPoint, getRandomPointY()));
+        addGameObject(createDemoUnit("Orc Soldier", Side.RightArmy, rightSpawnPoint, getRandomPointY()));
+
+//        if (++testSpawnTimer2 >= 8) {
+//            addGameObject(createDemoUnit("Orc Soldier", Side.RightArmy, rightSpawnPoint, getRandomPointY()));
+//        }
+//
+//        if (++testSpawnTimer2 >= 10) {
+//            testSpawnTimer2 = 0;
+//            addGameObject(createDemoUnit("Human Archer", Side.LeftArmy, leftSpawnPoint, getRandomPointY()));
+//            addGameObject(createDemoUnit("Human Archer", Side.LeftArmy, leftSpawnPoint, getRandomPointY()));
+//            addGameObject(createDemoUnit("Orc Soldier", Side.RightArmy, rightSpawnPoint, getRandomPointY()));
+//            addGameObject(createDemoUnit("Orc Archer", Side.RightArmy, rightSpawnPoint, getRandomPointY()));
+//        }
+    }
+
+    // TODO test: random y
+    private Random random = new Random();
+    public int getRandomPointY() {
+        return (int) ((random.nextFloat() * (490 - 1)) + Grid.INDENT_TOP);
+    }
+
 }

@@ -44,7 +44,7 @@ public class EngineV3 implements GameEngine {
 
     @Override
     public void start() {
-        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment( );
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         gd = ge.getDefaultScreenDevice();
 
         if (!gd.isFullScreenSupported()) {

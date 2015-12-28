@@ -92,7 +92,7 @@ public class PhysicsModel {
     }
 
     public void setDefaultSpeed(float defaultSpeed) {
-        this.defaultSpeed = defaultSpeed;
+        this.defaultSpeed = defaultSpeed * ResourceLoader.SCALE;
     }
 
     public float getAttackSpeed() {
@@ -108,7 +108,7 @@ public class PhysicsModel {
     }
 
     public void setAttackRange(float attackRange) {
-        this.attackRange = attackRange;
+        this.attackRange = attackRange * ResourceLoader.SCALE;
     }
 
     public float getSearchRange() {
@@ -116,7 +116,7 @@ public class PhysicsModel {
     }
 
     public void setSearchRange(float searchRange) {
-        this.searchRange = searchRange;
+        this.searchRange = searchRange * ResourceLoader.SCALE;
     }
 
     public int getSpawnPrice() {
@@ -156,7 +156,7 @@ public class PhysicsModel {
     }
 
     public void setHitBoxWidth(float hitBoxWidth) {
-        this.hitBoxWidth = hitBoxWidth;
+        this.hitBoxWidth = hitBoxWidth * ResourceLoader.SCALE;
     }
 
     public float getHitBoxHeight() {
@@ -164,7 +164,7 @@ public class PhysicsModel {
     }
 
     public void setHitBoxHeight(float hitBoxHeight) {
-        this.hitBoxHeight = hitBoxHeight;
+        this.hitBoxHeight = hitBoxHeight * ResourceLoader.SCALE;
     }
 
 }
