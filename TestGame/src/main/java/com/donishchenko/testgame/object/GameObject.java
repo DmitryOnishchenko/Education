@@ -111,7 +111,10 @@ public class GameObject implements Comparable<GameObject> {
     }
 
     public void updateAction() {
-        if (action != null) action.execute();
+        if (action != null) {
+            action.update();
+            action.updateAnimation();
+        }
     }
 
     public void updatePhysics() {

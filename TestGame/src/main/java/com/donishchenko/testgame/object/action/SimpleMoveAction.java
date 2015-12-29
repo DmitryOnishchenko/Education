@@ -22,20 +22,20 @@ public class SimpleMoveAction extends Action {
     }
 
     @Override
-    public void execute() {
-        float shiftX                = gameObject.speed * gameObject.dir.x;
-        gameObject.pos.x            += shiftX;
-        gameObject.hitBox.x         += shiftX;
-        gameObject.attackBox.x      += shiftX;
-        gameObject.searchCircle.x   += shiftX;
-
-        float shiftY                = gameObject.speed * gameObject.dir.y;
-        gameObject.pos.y            += shiftY;
-        gameObject.hitBox.y         += shiftY;
-        gameObject.attackBox.y      += shiftY;
-        gameObject.searchCircle.y   += shiftY;
-
-        gameObject.cell.move(gameObject);
+    public void update() {
+//        float shiftX                = gameObject.speed * gameObject.dir.x;
+//        gameObject.pos.x            += shiftX;
+//        gameObject.hitBox.x         += shiftX;
+//        gameObject.attackBox.x      += shiftX;
+//        gameObject.searchCircle.x   += shiftX;
+//
+//        float shiftY                = gameObject.speed * gameObject.dir.y;
+//        gameObject.pos.y            += shiftY;
+//        gameObject.hitBox.y         += shiftY;
+//        gameObject.attackBox.y      += shiftY;
+//        gameObject.searchCircle.y   += shiftY;
+//
+//        gameObject.cell.move(gameObject);
     }
 
 }

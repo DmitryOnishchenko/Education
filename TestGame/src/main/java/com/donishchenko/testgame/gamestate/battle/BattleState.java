@@ -46,7 +46,7 @@ public class BattleState extends GameState {
         bloodList = effects.get("bloodList");
 
         addGameObject(createDemoUnit("Human Soldier", Side.LeftArmy, 150, 500));
-        addGameObject(createDemoUnit("Orc Soldier", Side.RightArmy, 400, 500));
+//        addGameObject(createDemoUnit("Orc Soldier", Side.RightArmy, 400, 500));
     }
 
     public void addGameObject(GameObject gameObject) {

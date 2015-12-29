@@ -35,7 +35,7 @@ public class GraphicsComponentImpl implements GraphicsComponent {
 
     @Override
     public void update() {
-        gameObject.action.updateAnimation();
+//        gameObject.action.updateAnimation();
     }
 
     @Override

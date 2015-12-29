@@ -9,9 +9,13 @@ public abstract class Action {
     public GameObject gameObject;
     public Animation animation;
 
+
+
     public abstract void init();
 
-    public abstract void execute();
+    public abstract void update();
+
+    public void animationFinished() {}
 
     public void updateAnimation() {
         animation.next();
@@ -20,7 +24,5 @@ public abstract class Action {
     public BufferedImage getCurrentFrame() {
         return animation.getCurrentFrame();
     }
-
-    public void animationFinished() {}
 
 }

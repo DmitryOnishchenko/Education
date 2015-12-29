@@ -22,7 +22,7 @@ public class SimpleAttackAction extends Action {
     }
 
     @Override
-    public void execute() {
+    public void update() {
         GameObject target = gameObject.target;
         if (target != null) {
             if (!target.isAlive()) {
