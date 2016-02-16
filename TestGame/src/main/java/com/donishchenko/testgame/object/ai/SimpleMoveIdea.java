@@ -11,7 +11,7 @@ public class SimpleMoveIdea extends Idea {
     private int rethinkTrigger = 250 * 1_000_000 / EngineConstants.NANO_PER_TICK;
 
     public SimpleMoveIdea(GameObject gameObject, int priority) {
-        super(gameObject, priority);
+        super("move", gameObject, priority);
     }
 
     @Override

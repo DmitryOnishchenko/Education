@@ -7,7 +7,7 @@ import com.donishchenko.testgame.object.action.SimpleAttackAction;
 public class SimpleAttackIdea extends Idea {
 
     public SimpleAttackIdea(GameObject gameObject, int priority) {
-        super(gameObject, priority);
+        super("attack", gameObject, priority);
     }
 
     @Override

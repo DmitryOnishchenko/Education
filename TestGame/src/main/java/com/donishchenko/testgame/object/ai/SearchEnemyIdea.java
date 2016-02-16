@@ -10,7 +10,7 @@ public class SearchEnemyIdea extends Idea {
     private int rethinkTrigger = 1000 * 1_000_000 / EngineConstants.NANO_PER_TICK;
 
     public SearchEnemyIdea(GameObject gameObject, int priority) {
-        super(gameObject, priority);
+        super("search", gameObject, priority);
     }
 
     @Override

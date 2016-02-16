@@ -5,11 +5,13 @@ import com.donishchenko.testgame.object.action.Action;
 
 public abstract class Idea {
 
+    public String name;
     public GameObject gameObject;
     public int priority;
     public Action action;
 
-    public Idea(GameObject gameObject, int priority) {
+    public Idea(String name, GameObject gameObject, int priority) {
+        this.name = name;
         this.gameObject = gameObject;
         this.priority = priority;
     }

@@ -1,6 +1,7 @@
 package com.donishchenko.testgame.resources;
 
 import com.donishchenko.testgame.Application;
+import com.donishchenko.testgame.config.GameConstants;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -122,6 +123,30 @@ public class ImageUtils {
         g2.dispose();
 
         return copy;
+    }
+
+    public static BufferedImage createBufferedImage() {
+        BufferedImage image = gc.createCompatibleImage(
+                GameConstants.DEFAULT_WIDTH, GameConstants.DEFAULT_HEIGHT, BufferedImage.TYPE_INT_ARGB);
+        image.setAccelerationPriority(1);
+
+        return image;
+    }
+
+    public static BufferedImage makeImageTranslucent(BufferedImage source, double alpha) {
+        BufferedImage target = new BufferedImage(source.getWidth(),
+                source.getHeight(), Transparency.TRANSLUCENT);
+        // Get the images graphics
+        Graphics2D g = target.createGraphics();
+        // Set the Graphics composite to Alpha
+        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
+                (float) alpha));
+        // Draw the image into the prepared reciver image
+        g.drawImage(source, null, 0, 0);
+        // let go of all system resources in this Graphics
+        g.dispose();
+        // Return the image
+        return target;
     }
 
     /**

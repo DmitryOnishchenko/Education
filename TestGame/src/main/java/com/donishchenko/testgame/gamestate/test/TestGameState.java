@@ -1,12 +1,12 @@
 package com.donishchenko.testgame.gamestate.test;
 
 
-import com.donishchenko.testgame.resources.GraphicsModel;
-import com.donishchenko.testgame.resources.ResourceLoader;
-import com.donishchenko.testgame.resources.Resources;
 import com.donishchenko.testgame.config.GameConstants;
 import com.donishchenko.testgame.gamestate.GameState;
 import com.donishchenko.testgame.gamestate.GameStateManager;
+import com.donishchenko.testgame.resources.GraphicsModel;
+import com.donishchenko.testgame.resources.ResourceLoader;
+import com.donishchenko.testgame.resources.Resources;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -16,12 +16,16 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+import static com.donishchenko.testgame.resources.ImageUtils.createBufferedImage;
+import static com.donishchenko.testgame.resources.ImageUtils.makeImageTranslucent;
+import static com.donishchenko.testgame.resources.ImageUtils.toCompatibleImage;
+
 public class TestGameState extends GameState {
 
     private BufferedImage backgroundLayer_0;
     private BufferedImage backgroundLayer_1;
 
-    private int total = 3_000;
+    private int total = 10_000;
     private List<TestObject> testObjects;
 
     public TestGameState(GameStateManager gsm) {
@@ -75,18 +79,36 @@ public class TestGameState extends GameState {
         }
     }
 
+    private final int rules[] = {
+            AlphaComposite.DST,
+            AlphaComposite.DST_ATOP,
+            AlphaComposite.DST_OUT,
+            AlphaComposite.SRC,
+            AlphaComposite.SRC_ATOP,
+            AlphaComposite.SRC_OUT,
+            AlphaComposite.SRC_OVER
+    };
+    private BufferedImage translucent = toCompatibleImage(makeImageTranslucent(createBufferedImage(), 0));
     @Override
     public void render(Graphics2D g2) {
-        g2.drawImage(backgroundLayer_0, 0, 0, null);
+        Graphics2D g2test = (Graphics2D) translucent.getGraphics();
 
-        for (TestObject obj : testObjects) {
-            obj.render(g2);
-        }
+        AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.DST_ATOP);
+        g2test.setComposite(ac);
+        g2test.drawImage(backgroundLayer_1, 0, 0, null);
 
-        g2.drawImage(backgroundLayer_1, 0, 0, null);
+//        for (TestObject obj : testObjects) {
+//            obj.render(g2);
+//        }
+//
+//        g2.drawImage(backgroundLayer_0, 0, 0, null);
 
         /* Info */
-        g2.setPaint(Color.WHITE);
-        g2.drawString("TestState | Objects: " + total, 900, 36);
+        g2test.setPaint(Color.WHITE);
+        g2test.drawString("TestState | Objects: " + total, 900, 36);
+
+        ac = AlphaComposite.getInstance(AlphaComposite.SRC);
+        g2.setComposite(ac);
+        g2.drawImage(translucent, 0, 0, null);
     }
 }
